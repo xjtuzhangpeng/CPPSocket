@@ -35,4 +35,3 @@ protected:
 };
 
 #endif	/* CPPTCPSOCKET_H */
-

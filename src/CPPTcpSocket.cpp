@@ -81,11 +81,8 @@ bool CPPTcpServerSocket::listen(short port, int maxConnections){
 int CPPTcpServerSocket::accept(int timeout){
     std::lock_guard<std::mutex> lockR(recvLock), lockS(sendLock);
     if (!isOpen()) return -1;
-    struct pollfd pfd[2];
-
-    pfd[0] = {m_sock, POLLIN|POLLPRI, 0};
-    pfd[1] = {interruptPipe[0], POLLIN|POLLPRI, 0};
-    if (poll(pfd, 2, timeout) > 0){
+    struct pollfd pfd = {m_sock, POLLIN|POLLPRI, 0};
+    if (poll(&pfd, 1, timeout) > 0){
         struct sockaddr_in remote;
         socklen_t size = sizeof(struct sockaddr_in);
         return ::accept(m_sock, (struct sockaddr *)&remote, &size);

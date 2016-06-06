@@ -46,7 +46,6 @@ protected:
     std::mutex sendLock;
     std::mutex recvLock;
     bool sigClose;
-    int interruptPipe[2];
 };
 
 #endif	/* CPPSOCKET_H */

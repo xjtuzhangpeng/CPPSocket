@@ -3,19 +3,15 @@
 CPPSocket::CPPSocket(){
     m_sock = -1;
     sigClose = false;
-    ::pipe(interruptPipe);
 }
 
 CPPSocket::CPPSocket(int fd){
     m_sock = fd;
     sigClose = false;
-    ::pipe(interruptPipe);
 }
 
 CPPSocket::~CPPSocket(){
     close();
-    ::close(interruptPipe[0]);
-    ::close(interruptPipe[1]);
 }
 
 bool CPPSocket::isOpen(){
@@ -28,11 +24,9 @@ bool CPPSocket::open(int type, int af){
 
 bool CPPSocket::close(){
     sigClose = true;
-    char interrupt = '\0';
-    ::write(interruptPipe[1], &interrupt, 1);
+    ::shutdown(m_sock, SHUT_RDWR);
     std::lock_guard<std::mutex> lockR(recvLock), lockS(sendLock);
     sigClose = false;
-    ::read(interruptPipe[0], &interrupt, 1);
     bool ret = isOpen() ? (::close(m_sock) == 0) : false;
     m_sock = -1;
     return ret;
@@ -52,11 +46,8 @@ bool CPPSocket::hasData(int timeout){
     std::lock_guard<std::mutex> lockR(recvLock);
     if (!isOpen()) return false;
     
-    struct pollfd pfd[2];
-    pfd[0] = {m_sock, POLLIN|POLLPRI, 0};
-    pfd[1] = {interruptPipe[0], POLLIN|POLLPRI, 0};
-    
-    if (poll(pfd, 2, timeout) > 0){
+    struct pollfd pfd = {m_sock, POLLIN|POLLPRI, 0};
+    if (poll(&pfd, 1, timeout) > 0){
         return (!sigClose);
     }
     return false;
