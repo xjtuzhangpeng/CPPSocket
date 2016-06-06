@@ -67,12 +67,19 @@ bool CPPSocket::isBlocking(){
         return (arg == (arg & (~O_NONBLOCK)));
 }
 
-bool CPPSocket::setSocketOption(int optionLevel, int optionName, void *optionValue, size_t optionLength, bool lock){
+bool CPPSocket::setSocketOption(int optionLevel, int optionName, void *optionValue, socklen_t optionLength, bool lock){
     std::unique_lock<std::mutex> lockR(recvLock, std::defer_lock), lockS(sendLock, std::defer_lock);
     if (lock) std::lock(lockR, lockS);
     if (!isOpen()) return false;
     
     return (::setsockopt(m_sock, optionLevel, optionName, optionValue, optionLength) != -1);
+}
+
+bool CPPSocket::getSocketOption(int optionLevel, int optionName, void *optionValue, socklen_t *optionLength, bool lock){ 
+    std::unique_lock<std::mutex> lockR(recvLock, std::defer_lock), lockS(sendLock, std::defer_lock);
+    if (lock) std::lock(lockR, lockS);
+    if (!isOpen()) return false;
+    return (::getsockopt(m_sock, optionLevel, optionName, optionValue, optionLength) != -1);
 }
 
 bool CPPSocket::setSocketReceiveTimeout(int timeout) {

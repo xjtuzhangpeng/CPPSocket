@@ -32,7 +32,8 @@ public:
     bool hasData(int timeout = 10000); //milliseconds
     bool setBlocking(bool block, bool lock = true);
     bool isBlocking();
-    bool setSocketOption(int optionLevel, int optionName, void *optionValue, size_t optionLength, bool lock = true);
+    bool setSocketOption(int optionLevel, int optionName, void *optionValue, socklen_t optionLength, bool lock = true);
+    bool getSocketOption(int optionLevel, int optionName, void *optionValue, socklen_t *optionLength, bool lock = true);
     bool setSocketReceiveTimeout(int timeout = 1000); //milliseconds
     int getSock();
     bool isOpen();
