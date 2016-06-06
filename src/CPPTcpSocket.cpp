@@ -1,8 +1,5 @@
 #include "CPPSocket/CPPTcpSocket.h"
 #include <thread>
-#include <iostream>
-using std::cout;
-using std::endl;
 
 CPPTcpClientSocket::CPPTcpClientSocket()
 : CPPSocket()
@@ -63,21 +60,6 @@ bool CPPTcpClientSocket::connect(short port, unsigned int addr, int timeout, boo
         m_sock=-1;
     }
     return false;
-    
-//    do{
-//        if (::connect(m_sock, (struct sockaddr *)&remote, sizeof(remote)) == 0){
-//            setBlocking(true, false);
-//            return true;
-//        }
-//        std::chrono::duration<double, std::milli> dur = std::chrono::system_clock::now() - start;
-//        tremaining = timeout - dur.count();
-//        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-//    }while ((tremaining > 0.0 || timeout < 0) && !sigClose);
-//    ::shutdown(m_sock, SHUT_RDWR);
-//    ::close(m_sock);
-//    setBlocking(true, false);
-//    m_sock=-1;
-//    return false;
 }
 
 bool CPPTcpClientSocket::connect(short port, std::string addr, int timeout, bool spin){
