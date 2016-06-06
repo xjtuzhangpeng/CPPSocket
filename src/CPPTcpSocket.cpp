@@ -31,6 +31,7 @@ bool CPPTcpClientSocket::connect(short port, unsigned int addr, int timeout){
         tremaining = timeout - dur.count();
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }while ((tremaining > 0.0 || timeout < 0) && !sigClose);
+    ::shutdown(m_sock, SHUT_RDWR);
     ::close(m_sock);
     m_sock=-1;
     return false;

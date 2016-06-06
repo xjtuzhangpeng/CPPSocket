@@ -87,7 +87,6 @@ bool CPPSocket::setSocketReceiveTimeout(int timeout) {
     return setSocketOption(SOL_SOCKET, SO_RCVTIMEO, (char *)&tv_to, sizeof(tv_to), false);
 }
 
-
 int CPPSocket::getSock(){
     return m_sock;
 }
