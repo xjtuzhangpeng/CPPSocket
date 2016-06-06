@@ -15,9 +15,11 @@
 class CPPTcpClientSocket : public CPPSocket{
 public:
     CPPTcpClientSocket();
-    bool connect(short port, unsigned int addr, int timeout = 10000);
-    bool connect(short port, std::string addr, int timeout = 10000);
     
+    //spin flag indicates that the method will re-attempt to connect on
+    //any error within the timeout interval
+    bool connect(short port, unsigned int addr, int timeout = 10000, bool spin = true);
+    bool connect(short port, std::string addr, int timeout = 10000, bool spin = true);
 protected:
     bool open();
     short m_port;
